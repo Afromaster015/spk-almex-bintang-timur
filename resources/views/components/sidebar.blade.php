@@ -2,9 +2,9 @@
             
             <i id="btn-toggle" class="bx bx-chevron-left bg-white text-merah-terang text-2xl w-9 h-9 flex items-center justify-center rounded-full absolute -right-4 top-9 border border-merah-terang cursor-pointer ease-in-out duration-300"></i>
 
-            <a href="">
+            <a href="{{ route('dashboard') }}">
                 <div class="flex items-center h-12 gap-x-4">
-                    <i class="bx bx-data text-white text-2xl mx-[6px]"></i>
+                    <i class="bx bx-data text-white text-2xl"></i>
                     <h1 id="logo-text" class="text-white font-bold origin-left ease-in-out duration-300 text-xl">Aplikasi SPK</h1>
                 </div>
             </a>
@@ -54,7 +54,7 @@
                 </li>
 
                 <li>
-                    <a href="{{ route('perhitungan.index') }}" class="flex items-center h-12 p-2 hover:bg-white/20 rounded-md cursor-pointer transition-colors duration-200">
+                    <a href="{{ route('perhitungan.index') }}" class="flex items-center gap-x-4 h-12 p-2 hover:bg-white/20 rounded-md cursor-pointer transition-colors duration-200">
                         <i class="bx bx-calculator text-white text-xl"></i>
                         <span class="text-white menu-text duration-300 ease-in-out mx-2">Perhitungan</span>
                     </a>
@@ -64,7 +64,7 @@
 
             <ul class="pl-2 border-t border-white/20 pt-4 mt-auto">
                 <li>
-                    <a href="#" onclick="logoutAman(event)" class="flex items-center h-12 p-2 hover:bg-white/20 rounded-md cursor-pointer transition-colors duration-200">
+                    <a href="#" onclick="logoutAman(event)" class="flex items-center gap-x-4 h-12 p-2 hover:bg-white/20 rounded-md cursor-pointer transition-colors duration-200">
                         <i class="bx bx-log-out text-white text-xl"></i>
                         <span class="text-white menu-text duration-300 ease-in-out mx-2">Logout</span>
                     </a>

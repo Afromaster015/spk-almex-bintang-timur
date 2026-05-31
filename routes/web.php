@@ -23,7 +23,7 @@ Route::get('/dashboard', function () {
     }
 
     return view('pages.dashboard');
-});
+})->name('dashboard');
 
 // Rute untuk proses logout
 Route::get('/logout', [AuthController::class, 'logout']);
