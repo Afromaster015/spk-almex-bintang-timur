@@ -1,0 +1,103 @@
+Rencana Pengembangan Fitur Evaluasi Periodik (Kuartalan)
+Sistem Pendukung Keputusan Penentuan Pelanggan Terbaik (AHP & SAW)
+
+Dokumen ini berisi panduan teknis untuk mengubah sistem penentuan pelanggan terbaik menjadi berbasis periode kuartal.
+
+1. Tujuan & Ruang Lingkup
+- Memisahkan data penilaian pelanggan dan hasil SPK berdasarkan periode kuartal (Q1, Q2, Q3, Q4) dan tahun.
+- Menyimpan riwayat hasil perhitungan agar data periode lama dapat dimuat kembali tanpa berubah.
+- Menyediakan fitur penguncian/periode selesai untuk mencegah perubahan di data historis.
+
+2. Desain Database
+A. Tabel Periode
+CREATE TABLE `tb_periode` (
+  `id_periode` INT AUTO_INCREMENT PRIMARY KEY,
+  `nama_periode` VARCHAR(10) NOT NULL,
+  `tahun` YEAR NOT NULL,
+  `status` ENUM('Aktif', 'Selesai') DEFAULT 'Aktif',
+  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+B. Modifikasi Tabel Penilaian/Nilai Alternatif
+ALTER TABLE `tb_penilaian`
+ADD COLUMN `id_periode` INT NOT NULL AFTER `id_pelanggan`,
+ADD CONSTRAINT `fk_penilaian_periode`
+FOREIGN KEY (`id_periode`) REFERENCES `tb_periode`(`id_periode`) ON DELETE CASCADE;
+
+C. Tabel Riwayat Hasil SPK
+CREATE TABLE `tb_hasil_spk` (
+  `id_hasil` INT AUTO_INCREMENT PRIMARY KEY,
+  `id_periode` INT NOT NULL,
+  `id_pelanggan` INT NOT NULL,
+  `nilai_akhir` DOUBLE NOT NULL,
+  `peringkat` INT NOT NULL,
+  `keterangan_diskon` VARCHAR(150),
+  FOREIGN KEY (`id_periode`) REFERENCES `tb_periode`(`id_periode`),
+  FOREIGN KEY (`id_pelanggan`) REFERENCES `tb_pelanggan`(`id_pelanggan`)
+);
+
+3. Logika Backend dan Query
+A. Bobot Kriteria vs Penilaian Alternatif
+- Bobot AHP bisa dibuat global untuk semua periode agar perhitungan tetap konsisten.
+- Nilai Alternatif SAW harus difilter berdasarkan `id_periode` aktif atau terpilih.
+
+B. Contoh query penyesuaian
+Sebelum:
+SELECT * FROM tb_penilaian WHERE id_pelanggan = '$id_pelanggan';
+Sesudah:
+SELECT * FROM tb_penilaian WHERE id_pelanggan = '$id_pelanggan' AND id_periode = '$id_periode_terpilih';
+
+C. Mekanisme Freeze Data
+1. Admin menekan tombol "Simpan Hasil Periode".
+2. Sistem memindahkan hasil perhitungan SAW ke `tb_hasil_spk`.
+3. Status periode diubah dari `Aktif` menjadi `Selesai`.
+4. Data periode selesai menjadi read-only di frontend dan backend.
+
+4. Antarmuka dan Alur Kerja
+A. Dropdown Periode
+- Tambahkan dropdown periode di header atau halaman utama.
+- Pilihan: Q1 2026, Q2 2026, dll.
+- Simpan pilihan periode ke session agar page lain ikut terfilter.
+
+B. Menu Manajemen Periode
+- Halaman CRUD periode untuk membuat/mengaktifkan/mengakhiri kuartal.
+- Tombol `Aktifkan`, `Tutup`, dan `Selesai`.
+
+C. Halaman Perhitungan Dinamis
+- Jika periode `Aktif`: tampilkan tombol `Hitung`, `Normalisasi`, dan `Simpan Hasil`.
+- Jika periode `Selesai`: tampilkan data dari `tb_hasil_spk`, sembunyikan tombol simpan.
+
+5. Checklist Implementasi
+- [ ] Backup database sebelum modifikasi.
+- [ ] Buat tabel `tb_periode` dan `tb_hasil_spk`.
+- [ ] Tambahkan `id_periode` pada tabel penilaian.
+- [ ] Buat halaman CRUD periode.
+- [ ] Tambahkan filter periode pada halaman nilai dan perhitungan.
+- [ ] Refaktor query agar menggunakan `id_periode`.
+- [ ] Buat proses penyimpanan hasil akhir ke `tb_hasil_spk`.
+- [ ] Tambahkan logika read-only untuk periode selesai.
+- [ ] Uji beda data Q1 dan Q2.
+
+6. Skenario Penggunaan
+1. Admin buat periode baru, misal Q1 2026.
+2. Admin input nilai pelanggan untuk Q1 2026.
+3. Admin jalankan perhitungan AHP + SAW untuk periode Q1 2026.
+4. Admin simpan hasil akhir dan kunci periode.
+5. Admin buka Q2 2026, input data baru tanpa merusak histori Q1.
+
+7. DO's and DON'Ts
+DO:
+- Lakukan backup database sebelum menjalankan DDL atau perubahan schema.
+- Pastikan nilai yang disimpan adalah angka murni tanpa format "Rp", titik, atau koma.
+- Simpan `id_periode` di semua query penilaian dan perhitungan.
+- Buat periode baru ketika kuartal berganti.
+- Terapkan validasi backend untuk menolak input jika periode sudah `Selesai`.
+- Simpan hasil perhitungan akhir di tabel arsip agar histori tetap konsisten.
+
+DON'T:
+- Jangan mengubah data periode lama setelah status `Selesai`.
+- Jangan memproses ulang riwayat periode yang sudah dikunci.
+- Jangan mencampur data nilai dari dua periode berbeda dalam satu perhitungan.
+- Jangan menghapus periode lama; cukup jadikan status `Selesai`.
+- Jangan menyimpan nilai kriteria dalam format teks atau dengan simbol mata uang.
+- Jangan lupa memasukkan `id_periode` pada setiap pembuatan atau pembaruan nilai.

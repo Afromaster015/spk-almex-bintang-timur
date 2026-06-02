@@ -11,7 +11,12 @@
             </div>
         </div>
 
-        @if($kriterias->isEmpty() || $alternatifs->isEmpty())
+        @if(!isset($currentPeriode) || !$currentPeriode)
+            <div class="rounded-3xl bg-yellow-50 border border-yellow-200 p-6 text-yellow-800">
+                <p class="font-semibold">Periode belum dipilih.</p>
+                <p class="mt-2">Silakan pilih atau buat periode kuartal di menu Periode terlebih dahulu sebelum mengisi nilai alternatif.</p>
+            </div>
+        @elseif($kriterias->isEmpty() || $alternatifs->isEmpty())
             <div class="rounded-3xl bg-yellow-50 border border-yellow-200 p-6 text-yellow-800">
                 <p class="font-semibold">Informasi tidak lengkap.</p>
                 <p class="mt-2">Pastikan sudah ada data kriteria dan data pelanggan sebelum memasukkan nilai alternatif.</p>

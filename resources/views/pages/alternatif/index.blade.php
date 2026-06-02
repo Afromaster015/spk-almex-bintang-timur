@@ -1,14 +1,14 @@
 @extends('layouts.app')
 
-@section('title', 'Alternatif - SPK')
+@section('title', 'Kelola Alternatif - SPK')
 
 @section('content')
     <div class="flex items-center justify-between mb-10">
         <div>
-            <h1 class="text-4xl font-semibold">Manajemen Alternatif</h1>
-            <p class="text-gray-600 mt-2">Kelola data pelanggan yang akan dinilai untuk pemberian diskon.</p>
+            <h1 class="text-4xl font-semibold">Kelola Alternatif</h1>
+            <p class="text-gray-600 mt-2">Lihat seluruh alternatif yang tersimpan dan tambahkan alternatif baru ke database.</p>
         </div>
-        <div class="flex gap-3">
+        <div>
             <a href="{{ route('alternatif.create') }}" class="rounded-md bg-merah-terang px-5 py-3 text-white hover:bg-red-600">Tambah Alternatif</a>
         </div>
     </div>
@@ -38,7 +38,9 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="3" class="px-6 py-8 text-center text-gray-500">Belum ada data pelanggan. Silakan tambahkan data alternatif.</td>
+                        <td colspan="3" class="px-6 py-8 text-center text-gray-500">
+                            Belum ada data pelanggan. Tambahkan alternatif baru menggunakan tombol "Tambah Alternatif".
+                        </td>
                     </tr>
                 @endforelse
             </tbody>

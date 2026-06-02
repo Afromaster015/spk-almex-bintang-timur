@@ -13,6 +13,7 @@ class Alternatif extends Model
     protected $fillable = [
         'kode_alternatif',
         'nama_pelanggan',
+        'periode_id',
     ];
 
     public function nilais() { return $this->hasMany(NilaiAlternatif::class); }

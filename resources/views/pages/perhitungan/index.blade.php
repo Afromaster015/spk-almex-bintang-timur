@@ -12,6 +12,13 @@
                 </div>
             </div>
 
+            @if(!isset($currentPeriode) || !$currentPeriode)
+                <div class="mt-6 rounded-3xl bg-yellow-50 border border-yellow-200 p-6 text-yellow-800">
+                    <p class="font-semibold">Periode belum dipilih.</p>
+                    <p class="mt-2">Pilih atau buat periode kuartal di menu Periode agar perhitungan dihitung berdasarkan data periode yang benar.</p>
+                </div>
+            @endif
+
             @if($kriterias->isEmpty() || $alternatifs->isEmpty())
                 <div class="mt-8 rounded-3xl bg-yellow-50 border border-yellow-200 p-6 text-yellow-800">
                     <p class="font-semibold">Data belum lengkap.</p>
@@ -53,12 +60,6 @@
                                 <a href="{{ route('nilai-alternatif.index') }}" class="inline-flex items-center rounded-md bg-orange-600 px-4 py-2 text-sm font-medium text-white hover:bg-orange-700">
                                     Isi di Menu Nilai Bobot Alternatif
                                 </a>
-                                <form action="{{ route('perhitungan.create-missing-values') }}" method="POST" class="inline">
-                                    @csrf
-                                    <button type="submit" class="inline-flex items-center rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700">
-                                        Buat Record Otomatis (Nilai Default 1)
-                                    </button>
-                                </form>
                             </div>
                         </div>
                     @endif

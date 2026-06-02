@@ -6,6 +6,7 @@ use App\Models\Alternatif;
 use App\Models\Kriteria;
 use App\Models\KriteriaBobotMatrix;
 use App\Models\NilaiAlternatif;
+use App\Models\Periode;
 use Illuminate\Http\Request;
 
 class PerhitunganController extends Controller
@@ -19,15 +20,35 @@ class PerhitunganController extends Controller
         return null;
     }
 
+    private function getCurrentPeriode()
+    {
+        $periodeId = session('current_periode_id');
+        $periode = $periodeId ? Periode::find($periodeId) : null;
+
+        if (!$periode) {
+            $periode = Periode::orderBy('tahun', 'desc')
+                ->orderByRaw("FIELD(nama_periode, 'Q1', 'Q2', 'Q3', 'Q4')")
+                ->first();
+
+            if ($periode) {
+                session(['current_periode_id' => $periode->id]);
+            }
+        }
+
+        return $periode;
+    }
+
     public function index()
     {
         if ($redirect = $this->ensureLoggedIn()) {
             return $redirect;
         }
 
+        $currentPeriode = $this->getCurrentPeriode();
         $kriterias = Kriteria::orderBy('id')->get();
-        $alternatifs = Alternatif::orderBy('id')->get();
-        $nilaiAlternatif = NilaiAlternatif::all();
+        $nilaiAlternatif = $currentPeriode ? NilaiAlternatif::where('periode_id', $currentPeriode->id)->get() : collect();
+        $alternatifIds = $nilaiAlternatif->pluck('alternatif_id')->unique()->toArray();
+        $alternatifs = $currentPeriode ? Alternatif::whereIn('id', $alternatifIds)->orderBy('kode_alternatif')->get() : collect();
         $comparisonMatrix = [];
         $ahpNormalizedMatrix = [];
         $consistencyMeasures = [];
@@ -269,39 +290,9 @@ class PerhitunganController extends Controller
             'consistencyRatio',
             'isConsistent',
             'randomConsistencyIndices',
-            'n'
+            'n',
+            'currentPeriode'
         ));
-    }
-
-    public function createMissingValues()
-    {
-        if ($redirect = $this->ensureLoggedIn()) {
-            return $redirect;
-        }
-
-        $kriterias = Kriteria::orderBy('id')->get();
-        $alternatifs = Alternatif::orderBy('id')->get();
-        $nilaiAlternatif = NilaiAlternatif::all();
-        $createdCount = 0;
-
-        // Buat missing NilaiAlternatif records dengan nilai default 1
-        foreach ($alternatifs as $alternatif) {
-            foreach ($kriterias as $kriteria) {
-                $exists = $nilaiAlternatif->where('alternatif_id', $alternatif->id)
-                                          ->where('kriteria_id', $kriteria->id)
-                                          ->first();
-                if (!$exists) {
-                    NilaiAlternatif::create([
-                        'alternatif_id' => $alternatif->id,
-                        'kriteria_id' => $kriteria->id,
-                        'nilai' => 1, // Default value
-                    ]);
-                    $createdCount++;
-                }
-            }
-        }
-
-        return back()->with('success', "Berhasil membuat $createdCount record nilai alternatif yang hilang. Silakan edit nilai-nilai tersebut sesuai kebutuhan.");
     }
 }
 

@@ -45,7 +45,10 @@
 
                     <ul id="sub-alternatif" class="max-h-0 opacity-0 overflow-hidden transition-all duration-300 ease-in-out pl-11 pr-2 space-y-1">
                         <li>
-                            <a href="{{ route('alternatif.index') }}" class="text-white text-sm p-2 hover:bg-white/20 rounded-md menu-text duration-300 origin-left block">Alternatif</a>
+                            <a href="{{ route('alternatif.index') }}" class="text-white text-sm p-2 hover:bg-white/20 rounded-md menu-text duration-300 origin-left block">Kelola Alternatif</a>
+                        </li>
+                        <li>
+                            <a href="{{ route('alternatif.select') }}" class="text-white text-sm p-2 hover:bg-white/20 rounded-md menu-text duration-300 origin-left block">Pilih Alternatif</a>
                         </li>
                         <li>
                             <a href="{{ route('nilai-alternatif.index') }}" class="text-white text-sm p-2 hover:bg-white/20 rounded-md menu-text duration-300 origin-left block">Nilai Bobot Alternatif</a>
@@ -57,6 +60,12 @@
                     <a href="{{ route('perhitungan.index') }}" class="flex items-center gap-x-4 h-12 p-2 hover:bg-white/20 rounded-md cursor-pointer transition-colors duration-200">
                         <i class="bx bx-calculator text-white text-xl"></i>
                         <span class="text-white menu-text duration-300 ease-in-out mx-2">Perhitungan</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('periode.index') }}" class="flex items-center gap-x-4 h-12 p-2 hover:bg-white/20 rounded-md cursor-pointer transition-colors duration-200">
+                        <i class="bx bx-calendar text-white text-xl"></i>
+                        <span class="text-white menu-text duration-300 ease-in-out mx-2">Periode</span>
                     </a>
                 </li>
 
