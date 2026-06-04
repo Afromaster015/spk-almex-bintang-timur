@@ -16,7 +16,17 @@ Route::get('/login', function () {
     return view('pages.login');
 });
 
+Route::get('/register', function () {
+    return view('pages.register');
+});
+
+Route::get('/forgot-password', function () {
+    return view('pages.forgot-password');
+});
+
 Route::post('/proses-login', [AuthController::class, 'prosesLogin']);
+Route::post('/proses-register', [AuthController::class, 'prosesRegister']);
+Route::post('/proses-forgot-password', [AuthController::class, 'prosesForgotPassword']);
 
 Route::get('/dashboard', function () {
     if (!session()->has('username')) {

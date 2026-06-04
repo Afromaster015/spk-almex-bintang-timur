@@ -17,6 +17,11 @@
                     <input class="p-2 rounded-xl border border-gray-300" type="password" name="password" placeholder="Password">
                     <button class="bg-merah-terang text-white py-2 px-4 rounded-xl hover:bg-merah-gelap hover:scale-105 duration-300 hover:text-[18px] hover:font-bold ease-in-out mt-8" type="submit" name="login">Login</button>
                     
+                    <div class="text-center mt-6 text-sm">
+                        <a href="{{ url('/forgot-password') }}" class="text-blue-600 hover:text-blue-800 hover:underline">Lupa password?</a>
+                        <span class="text-gray-400 mx-2">|</span>
+                        <a href="{{ url('/register') }}" class="text-blue-600 hover:text-blue-800 hover:underline">Buat akun</a>
+                    </div>
                     </form>
             </div>
                 <a href="{{ url('/') }}" class="w-1/2 sm:block hidden ">

@@ -44,7 +44,7 @@
       class="bg-[#ef4343] text-white text-base px-7 py-3 rounded-full font-bold hover:bg-[#af3535] hover:shadow-lg hover:scale-120 ease-in-out hover: duration-300 cursor-pointer "
       onclick="window.location.href = '{{ url('/login') }}'"
     >
-      Sign in
+      Masuk
     </button>
   </div>
 </nav>
